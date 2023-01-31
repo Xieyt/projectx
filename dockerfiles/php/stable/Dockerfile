@@ -1,10 +1,5 @@
 FROM php:7.4-fpm@sha256:3ac7c8c74b2b047c7cb273469d74fc0d59b857aa44043e6ea6a0084372811d5b
 
-LABEL maintainer="Devarshi Sathiya <devarshisathiya5@gmail.com>, Riddhesh Sanghvi <riddhesh237@gmail.com>"
-LABEL org.label-schema.schema-version="1.0.0"
-LABEL org.label-schema.vendor="EasyEngine"
-LABEL org.label-schema.name="php"
-
 RUN set -ex; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
@@ -110,7 +105,7 @@ RUN mkdir -p /var/log/php; \
 	chown -R www-data: /var/log/php; \
 	rm /usr/local/etc/php-fpm.d/*;
 COPY php.ini /usr/local/etc/php/php.ini
-COPY easyengine.conf /usr/local/etc/php-fpm.d/easyengine.conf
+# COPY easyengine.conf /usr/local/etc/php-fpm.d/easyengine.conf
 
 COPY expose_off.ini /usr/local/etc/php/conf.d/expose_off.ini
 COPY bashrc /root/.bashrc
