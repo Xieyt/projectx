@@ -1,10 +1,5 @@
 FROM php:5.6-fpm
 
-LABEL maintainer="Riddhesh Sanghvi <riddhesh237@gmail.com>, Devarshi Sathiya <devarshisathiya5@gmail.com>"
-LABEL org.label-schema.schema-version="1.0.0-rc1"
-LABEL org.label-schema.vendor="EasyEngine"
-LABEL org.label-schema.name="php5.6"
-
 RUN set -ex; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
@@ -27,6 +22,13 @@ RUN set -ex; \
 		vim \
 		zip
 
+
+# Install mhsendmail on amd64
+RUN	apt-get install -y --no-install-recommends \
+        wget; \
+        wget https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 -O /usr/bin/mhsendmail; \
+        chmod 777 /usr/bin/mhsendmail
+
 RUN pecl install imagick memcached-2.2.0; \
 	printf "\n" | pecl install mcrypt-1.0.1; \
 	printf "\n" | pecl install redis; \
@@ -38,6 +40,7 @@ RUN pecl install imagick memcached-2.2.0; \
 	docker-php-ext-enable imagick mcrypt redis; \
 	echo "extension=memcached.so" >> /usr/local/etc/php/conf.d/memcached.ini; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    apt-get clean; \
 	rm -rf /var/lib/apt/lists/*;
 
 # RUN	mkdir -p /usr/src/php/ext; \
@@ -51,6 +54,7 @@ RUN pecl install imagick memcached-2.2.0; \
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
+
 RUN { \
 		echo 'opcache.memory_consumption=128'; \
 		echo 'opcache.interned_strings_buffer=8'; \
@@ -75,14 +79,8 @@ RUN { \
 		echo 'path: /var/www/htdocs'; \
 		} > /etc/wp-cli/config.yml
 
-RUN echo "mailhub=postfix\nUseTLS=NO\nFromLineOverride=YES" > /etc/ssmtp/ssmtp.conf
 
-RUN mkdir -p /usr/local/etc/misc && \
-touch /usr/local/etc/misc/msmtprc && \
-rm -f /etc/ssmtp/revaliases && \
-ln -s /usr/local/etc/misc/msmtprc /etc/ssmtp/revaliases && \
-chown www-data:www-data /usr/local/etc/misc/msmtprc && \
-chown www-data:www-data /etc/ssmtp/revaliases
+#chown www-data:www-data /etc/ssmtp/revaliases
 
 # Setup logs
 RUN mkdir -p /var/log/php; \
@@ -94,11 +92,9 @@ COPY easyengine.conf /usr/local/etc/php-fpm.d/easyengine.conf
 COPY expose_off.ini /usr/local/etc/php/conf.d/expose_off.ini
 COPY bashrc /root/.bashrc
 COPY bashrc /var/www/.bashrc
-COPY docker-entrypoint.sh /usr/local/bin/
 
 WORKDIR /var/www/htdocs
 USER www-data
 
-ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]
 

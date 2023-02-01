@@ -1,0 +1,5 @@
+To: my@email.com
+Subject: sendmail test two
+From: me@myserver.com
+
+And here goes the e-mail body, test test test..

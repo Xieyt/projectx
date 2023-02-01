@@ -1,0 +1,27 @@
+
+
+
+* Facts
+- php can be switchable using context path
+- config is copied using the dockerfile, hotreloading not possible
+
+** Mailhog only has amd64 images
+issue is there on https://github.com/mailhog/MailHog/issues/372
+to support multiple arch
+- create images for aarch64
+- know about docker buildx
+- create dockerfile
+- mhsendmail used only amd64  in php containers
+
+** For automatic login to phpmyadmin
+Create custom hyperlink with user and pass as parameters -> in the cli
+or create .env file which will be accessed by both the db service and the phpmyadmin service and the login will be automatic
+
+* TODO
+- [ ]
+- [ ] Switchable PHP
+- [ ] Switchable Xedebug
+- [X] Remove Mailhub from php configurations
+- Multiarch support for php
+
+* Commands to remember for future uses

@@ -1,10 +1,5 @@
 FROM php:8.0-fpm@sha256:3ba0dec3b6c73f9948c0d3215da03e9341526356789ad75debe4848c485cf3cd
 
-LABEL maintainer="Riddhesh Sanghvi <riddhesh237@gmail.com>, Devarshi Sathiya <devarshisathiya5@gmail.com>"
-LABEL org.label-schema.schema-version="1.0.0"
-LABEL org.label-schema.vendor="EasyEngine"
-LABEL org.label-schema.name="php"
-
 RUN set -ex; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
@@ -30,6 +25,12 @@ RUN set -ex; \
 		vim \
 		zip
 
+# Install mhsendmail on amd64
+RUN	apt-get install -y --no-install-recommends \
+        wget; \
+        wget https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 -O /usr/bin/mhsendmail; \
+        chmod 777 /usr/bin/mhsendmail
+
 RUN pecl install imagick; \
 	pecl install memcached; \
 	pecl install redis; \
@@ -37,6 +38,7 @@ RUN pecl install imagick; \
 	pecl install mcrypt; \
 	pecl install gmagick-2.0.6RC1; \
 	pecl install timezonedb; \
+	pecl install xedebug-3.2.0; \
 	docker-php-ext-configure gd --with-freetype --with-jpeg; \
 	docker-php-ext-configure zip; \
 	docker-php-ext-install gd; \
@@ -89,21 +91,6 @@ RUN { \
 		echo 'path: /var/www/htdocs'; \
 		} > /etc/wp-cli/config.yml
 
-RUN mkdir /usr/local/etc/misc && \
-touch /usr/local/etc/misc/msmtprc && \
-ln -s /usr/local/etc/misc/msmtprc /etc/msmtprc && \
-chown www-data:www-data /usr/local/etc/misc/msmtprc && \
-chown www-data:www-data /etc/msmtprc
-
-RUN latest_build=$(curl -s https://download.newrelic.com/php_agent/release/ | grep 'linux.tar.gz' | sed 's/.*"\(.*\)".*/\1/') && \
-curl -L "https://download.newrelic.com$latest_build" | tar -C /tmp -zx && \
-export NR_INSTALL_USE_CP_NOT_LN=1 && \
-export NR_INSTALL_SILENT=1 && \
-/tmp/newrelic-php5-*/newrelic-install install && \
-rm -rf /tmp/newrelic-php5-* /tmp/nrinstall*
-
-ENV NR_PORT=/run/newrelic/newrelic.sock
-
 
 # Setup logs
 RUN mkdir -p /var/log/php; \
@@ -115,11 +102,8 @@ COPY easyengine.conf /usr/local/etc/php-fpm.d/easyengine.conf
 COPY expose_off.ini /usr/local/etc/php/conf.d/expose_off.ini
 COPY bashrc /root/.bashrc
 COPY bashrc /var/www/.bashrc
-COPY docker-entrypoint.sh /usr/local/bin/
-COPY newrelic.ini /usr/local/etc/php/conf.d/newrelic.ini
 
 WORKDIR /var/www/htdocs
 USER www-data
 
-ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]

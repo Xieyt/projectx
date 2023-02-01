@@ -5,7 +5,7 @@ RUN set -ex; \
 	apt-get install -y --no-install-recommends \
 		imagemagick \
 		less \
-		mariadb-client msmtp \
+		mariadb-client \
 		libc-client-dev \
 		libfreetype6-dev \
 		libjpeg-dev \
@@ -25,6 +25,11 @@ RUN set -ex; \
 		vim \
 		zip
 
+# Install mhsendmail on amd64
+RUN	apt-get install -y --no-install-recommends wget; \
+        wget https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 -O /usr/bin/mhsendmail; \
+        chmod 777 /usr/bin/mhsendmail
+
 RUN pecl install imagick; \
 	pecl install memcached; \
 	pecl install mcrypt; \
@@ -32,6 +37,7 @@ RUN pecl install imagick; \
     pecl install apcu; \
     pecl install gmagick-2.0.6RC1; \
     pecl install timezonedb; \
+    pecl install xedebug-3.0.0; \
 	docker-php-ext-configure gd --with-freetype --with-jpeg; \
 	docker-php-ext-configure zip; \
 	docker-php-ext-install gd; \
@@ -84,21 +90,6 @@ RUN { \
 		echo 'path: /var/www/htdocs'; \
 		} > /etc/wp-cli/config.yml
 
-RUN mkdir /usr/local/etc/misc && \
-touch /usr/local/etc/misc/msmtprc && \
-ln -s /usr/local/etc/misc/msmtprc /etc/msmtprc && \
-chown www-data:www-data /usr/local/etc/misc/msmtprc && \
-chown www-data:www-data /etc/msmtprc
-
-RUN latest_build=$(curl -s https://download.newrelic.com/php_agent/release/ | grep 'linux.tar.gz' | sed 's/.*"\(.*\)".*/\1/') && \
-curl -L "https://download.newrelic.com$latest_build" | tar -C /tmp -zx && \
-export NR_INSTALL_USE_CP_NOT_LN=1 && \
-export NR_INSTALL_SILENT=1 && \
-/tmp/newrelic-php5-*/newrelic-install install && \
-rm -rf /tmp/newrelic-php5-* /tmp/nrinstall*
-
-ENV NR_PORT=/run/newrelic/newrelic.sock
-
 
 # Setup logs
 RUN mkdir -p /var/log/php; \
@@ -110,11 +101,8 @@ COPY php.ini /usr/local/etc/php/php.ini
 COPY expose_off.ini /usr/local/etc/php/conf.d/expose_off.ini
 COPY bashrc /root/.bashrc
 COPY bashrc /var/www/.bashrc
-COPY docker-entrypoint.sh /usr/local/bin/
-COPY newrelic.ini /usr/local/etc/php/conf.d/newrelic.ini
 
 WORKDIR /var/www/htdocs
 USER www-data
 
-ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]
