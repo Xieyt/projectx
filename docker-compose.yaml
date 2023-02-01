@@ -1,13 +1,12 @@
 version: "3.9"
 services:
-  test:
-    build:
-      context: .
-      dockerfile: Dockerfile
   app:
     build:
-      context: ./dockerfiles/php/8.1
+      context: ./dockerfiles/php/${SET_PHP_VERSION}
+      args:
+        SET_XEDEBUG_VERSION: ${SET_XEDEBUG_VERSION}
       dockerfile: Dockerfile
+
     container_name: ph
     user: root
     volumes:

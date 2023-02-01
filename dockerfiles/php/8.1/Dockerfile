@@ -1,4 +1,5 @@
 FROM php:8.1-fpm@sha256:bdac671e3ca663c0e9dc7008f28b3ee8dc2cc5b2d11fcde83d2142ab0369f457
+ARG SET_XEDEBUG_VERSION
 
 RUN set -ex; \
 	apt-get update; \
@@ -35,7 +36,7 @@ RUN pecl install imagick; \
 	pecl install memcached; \
 	pecl install redis; \
 	pecl install apcu; \
-	pecl install xedebug-3.2.0; \
+	pecl install xdebug-${SET_XDEBUG_VERSION}; \
 	# https://github.com/php/pecl-encryption-mcrypt/issues/7#issuecomment-1050994596
 	pecl install -n mcrypt; \
 	pecl install gmagick-2.0.6RC1; \
@@ -60,6 +61,7 @@ RUN pecl install imagick; \
 	docker-php-ext-install sysvsem; \
 	docker-php-ext-install sysvshm; \
 	docker-php-ext-install bcmath; \
+    docker-php-ext-install xdebug; \
 	docker-php-ext-enable imagick mcrypt redis timezonedb apcu; \
 	echo "extension=memcached.so" >> /usr/local/etc/php/conf.d/memcached.ini; \
 	echo "extension=gmagick.so" >> /usr/local/etc/php/conf.d/gmagick.ini; \

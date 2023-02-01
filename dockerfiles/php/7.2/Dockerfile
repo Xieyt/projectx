@@ -1,4 +1,5 @@
 FROM php:7.2-fpm@sha256:a8d1ebf6390aa47574fd8aec875d907a4fa1169de8c88bd256890921e6454436
+ARG SET_XEDEBUG_VERSION
 
 RUN set -ex; \
 	apt-get update; \
@@ -33,7 +34,7 @@ RUN pecl install imagick; \
 	pecl install memcached; \
 	pecl install mcrypt-1.0.3; \
 	pecl install redis; \
-	pecl install xedebug-3.1.0; \
+	pecl install xedebug-${SET_XEDEBUG_VERSION}; \
 	docker-php-ext-configure gd --with-freetype-dir=/usr/include/freetype2 --with-png-dir=/usr/include --with-jpeg-dir=/usr/include; \
 	docker-php-ext-configure zip; \
 	docker-php-ext-install gd; \
