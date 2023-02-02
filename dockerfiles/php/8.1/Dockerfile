@@ -1,8 +1,9 @@
 FROM php:8.1-fpm@sha256:bdac671e3ca663c0e9dc7008f28b3ee8dc2cc5b2d11fcde83d2142ab0369f457
 ARG SET_XEDEBUG_VERSION
 
-RUN set -ex; \
-	apt-get update; \
+#RUN set -ex; \
+
+RUN apt-get update; \
 	apt-get install -y --no-install-recommends \
         imagemagick \
 		less \
@@ -88,6 +89,13 @@ RUN curl -O "https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cl
 		&& chmod +x wp-cli.phar \
 		&& mv wp-cli.phar /usr/local/bin/wp
 
+# Install nvm, node
+RUN export XDG_CONFIG_HOME="/opt" \
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash; \
+    \. /root/.bashrc; \
+    nvm install node \
+    && chown -R www-data:www-data /opt/nvm
+
 # Setup a config file
 RUN mkdir -p /etc/wp-cli
 RUN { \
@@ -108,5 +116,6 @@ COPY bashrc /var/www/.bashrc
 
 WORKDIR /var/www/htdocs
 USER www-data
+
 
 CMD ["php-fpm"]

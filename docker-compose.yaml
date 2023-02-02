@@ -8,7 +8,8 @@ services:
       dockerfile: Dockerfile
 
     container_name: ph
-    user: root
+    user: ${SET_HOST_UID}:${SET_HOST_GID}
+    #user: root
     volumes:
       - ./src:/var/www/htdocs
 
