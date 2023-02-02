@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  test:
+    build:
+      context: .
+      args:
+        SET_PHP_VERSION: ${SET_PHP_VERSION}
+      dockerfile: Dockerfile
+    container_name: test
