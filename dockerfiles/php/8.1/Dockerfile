@@ -61,7 +61,7 @@ RUN pecl install imagick; \
 	docker-php-ext-install sysvsem; \
 	docker-php-ext-install sysvshm; \
 	docker-php-ext-install bcmath; \
-    docker-php-ext-install xdebug; \
+    docker-php-ext-enable xdebug; \
 	docker-php-ext-enable imagick mcrypt redis timezonedb apcu; \
 	echo "extension=memcached.so" >> /usr/local/etc/php/conf.d/memcached.ini; \
 	echo "extension=gmagick.so" >> /usr/local/etc/php/conf.d/gmagick.ini; \

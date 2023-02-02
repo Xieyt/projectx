@@ -1,5 +1,19 @@
+* TODO
+- [ ]
+- [ ] Switchable PHP
+- [ ] Switchable Xedebug
+- [X] Remove Mailhub from php configurations
+- [ ] Multiarch support for php
 
-
+** 2 Feb
+- [ ]
+- [ ] Xdebug hot enable disable
+    Talk with devarshi about how to do this effectively or handle it with python.
+- [ ] Install configure wordpress
+- [ ] Install configure node,nvm
+- [ ] Nginx SSL certificate
+- [ ] Python Cli -> architecture
+- [ ] Install WP extensions all
 
 * Facts
 - php can be switchable using context path
@@ -17,11 +31,8 @@ to support multiple arch
 Create custom hyperlink with user and pass as parameters -> in the cli
 or create .env file which will be accessed by both the db service and the phpmyadmin service and the login will be automatic
 
-* TODO
-- [ ]
-- [ ] Switchable PHP
-- [ ] Switchable Xedebug
-- [X] Remove Mailhub from php configurations
-- Multiarch support for php
+
+* Knowledge
+** wp-cli
 
 * Commands to remember for future uses
