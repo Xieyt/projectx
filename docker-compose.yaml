@@ -2,9 +2,11 @@ version: "3.9"
 services:
   app:
     build:
-      context: ./dockerfiles/php/${SET_PHP_VERSION}
+      context: ./config/php/${SET_PHP_VERSION}
       args:
         SET_XEDEBUG_VERSION: ${SET_XEDEBUG_VERSION}
+        SET_HOST_UID: ${SET_HOST_UID}
+        SET_HOST_GID: ${SET_HOST_GID}
       dockerfile: Dockerfile
 
     container_name: ph
@@ -15,7 +17,7 @@ services:
 
   server:
     build:
-      context: ./dockerfiles/nginx
+      context: ./config/nginx
       dockerfile: Dockerfile
     ports:
       - 8000:80
@@ -25,10 +27,11 @@ services:
 
   db:
     build:
-      context: ./dockerfiles/mariadb
+      context: ./config/mariadb
       dockerfile: Dockerfile
 
     restart: on-failure
+    container_name: db
     environment:
       MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
       MARIADB_ROOT_PASSWORD: root_password
@@ -36,7 +39,7 @@ services:
       MARIADB_USER: example_user
       MARIADB_PASSWORD: example_pass
     volumes:
-      - ./dockerfiles/mariadb/storage:/var/lib/mysql
+      - ./config/mariadb/storage:/var/lib/mysql
     ports:
       - 8001:3306
 
@@ -51,7 +54,7 @@ services:
 
   mailhog:
     build:
-      context: ./dockerfiles/mailhog
+      context: ./config/mailhog
       dockerfile: Dockerfile
     restart: on-failure
     container_name: mailh
