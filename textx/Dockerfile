@@ -24,6 +24,6 @@ COPY bashrc /var/www/.bashrc
 
 
 WORKDIR /var/www/htdocs
-USER www-data
+#USER www-data
 
 CMD ["php-fpm"]

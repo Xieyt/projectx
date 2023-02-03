@@ -10,7 +10,6 @@ services:
       dockerfile: Dockerfile
 
     container_name: ph
-    user: ${SET_HOST_UID}:${SET_HOST_GID}
     #user: root
     volumes:
       - ./src:/var/www/htdocs
@@ -24,11 +23,20 @@ services:
     container_name: ng
     volumes:
       - ./src:/var/www/htdocs
+      - ./selfsigned.key:/usr/local/openresty/nginx/certs/server.key
+      - ./nginx-selfsigned.cert:/usr/local/openresty/nginx/certs/server.cert
+
+
+  certbot:
+    image: certbot/certbot
+
 
   db:
     build:
       context: ./config/mariadb
       dockerfile: Dockerfile
+      args:
+        SET_HOST_UID: ${SET_HOST_UID}
 
     restart: on-failure
     container_name: db
@@ -38,6 +46,8 @@ services:
       MARIADB_DATABASE: example_database
       MARIADB_USER: example_user
       MARIADB_PASSWORD: example_pass
+
+    #user: ${SET_HOST_UID}:${SET_HOST_GID}
     volumes:
       - ./config/mariadb/storage:/var/lib/mysql
     ports:
