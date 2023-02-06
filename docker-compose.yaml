@@ -1,18 +1,18 @@
 version: "3.9"
 services:
-  app:
+  php:
     build:
       context: ./config/php/${SET_PHP_VERSION}
+      dockerfile: Dockerfile
       args:
-        SET_XEDEBUG_VERSION: ${SET_XEDEBUG_VERSION}
+        SET_XDEBUG_VERSION: ${SET_XDEBUG_VERSION}
         SET_HOST_UID: ${SET_HOST_UID}
         SET_HOST_GID: ${SET_HOST_GID}
-      dockerfile: Dockerfile
-
-    container_name: ph
-    #user: root
+    container_name: php
     volumes:
-      - ./src:/var/www/htdocs
+      - type: bind
+        source: ./src
+        target: /var/www/htdocs
 
   server:
     build:
@@ -20,16 +20,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8000:80
-    container_name: ng
+      - 8001:443
+    container_name: nginx
     volumes:
       - ./src:/var/www/htdocs
-      - ./selfsigned.key:/usr/local/openresty/nginx/certs/server.key
-      - ./nginx-selfsigned.cert:/usr/local/openresty/nginx/certs/server.cert
-
-
-  certbot:
-    image: certbot/certbot
-
+      - ./config/nginx/certs/server.key:/usr/local/openresty/nginx/certs/server.key
+      - ./config/nginx/certs/server.crt:/usr/local/openresty/nginx/certs/server.crt
 
   db:
     build:
@@ -50,23 +46,48 @@ services:
     #user: ${SET_HOST_UID}:${SET_HOST_GID}
     volumes:
       - ./config/mariadb/storage:/var/lib/mysql
-    ports:
-      - 8001:3306
+    expose:
+      - 3306
 
 
   phpmyadmin:
     image: phpmyadmin
     restart: on-failure
+    container_name: phpmyadmin
     depends_on:
       - db
     ports:
-      - 8002:80
+      - 8003:80
 
   mailhog:
     build:
       context: ./config/mailhog
       dockerfile: Dockerfile
     restart: on-failure
-    container_name: mailh
+    container_name: mailhog
+    depends_on:
+      - php
     ports:
-      - 8003:8025
+      - 8004:8025
+
+  redis:
+    build:
+      context: ./config/redis
+      dockerfile: Dockerfile
+    restart: on-failure
+    container_name: redis
+    depends_on:
+      - php
+    expose:
+      - 6379
+
+  elastic:
+    build:
+      context: ./config/elasticsearch
+      dockerfile: Dockerfile
+    restart: on-failure
+    container_name: elasticsearch
+    depends_on:
+      - php
+    expose:
+      - 9200

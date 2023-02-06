@@ -1,5 +1,5 @@
 FROM php:8.1-fpm@sha256:bdac671e3ca663c0e9dc7008f28b3ee8dc2cc5b2d11fcde83d2142ab0369f457
-ARG SET_XEDEBUG_VERSION
+ARG SET_XDEBUG_VERSION
 ARG SET_HOST_UID
 ARG SET_HOST_GID
 
@@ -40,7 +40,7 @@ RUN pecl install imagick; \
 	pecl install memcached; \
 	pecl install redis; \
 	pecl install apcu; \
-	pecl install xdebug-${SET_XDEBUG_VERSION}; \
+	pecl install xdebug-$SET_XDEBUG_VERSION; \
 	# https://github.com/php/pecl-encryption-mcrypt/issues/7#issuecomment-1050994596
 	pecl install -n mcrypt; \
 	pecl install gmagick-2.0.6RC1; \
@@ -105,6 +105,9 @@ RUN mkdir -p /etc/wp-cli
 RUN { \
 		echo 'path: /var/www/htdocs'; \
 		} > /etc/wp-cli/config.yml
+
+RUN mkdir -p /var/www/.wp-cli \
+    && chown -R $SET_HOST_UID:$SET_HOST_GID /var/www/.wp-cli
 
 
 # Setup logs
