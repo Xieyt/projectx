@@ -85,9 +85,18 @@ services:
     build:
       context: ./config/elasticsearch
       dockerfile: Dockerfile
+
     restart: on-failure
     container_name: elasticsearch
-    depends_on:
-      - php
     expose:
       - 9200
+      - 9300
+    environment:
+      - discovery.type="single-node"
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: "2048M"
