@@ -1,101 +1,59 @@
-[
-  {"type":"directory","name":"config/","contents":[
-    {"type":"directory","name":"cron","contents":[
-      {"type":"file","name":"Dockerfile"}
-  ]},
-    {"type":"directory","name":"elasticsearch","contents":[
-      {"type":"file","name":"Dockerfile"}
-  ]},
-    {"type":"directory","name":"mailhog","contents":[
-      {"type":"file","name":"Dockerfile"}
-  ]},
-    {"type":"directory","name":"mariadb","contents":[
-      {"type":"file","name":"Dockerfile"},
-      {"type":"file","name":"ee.cnf"},
-      {"type":"file","name":"my.cnf"}
-  ]},
-    {"type":"directory","name":"nginx","contents":[
-      {"type":"directory","name":"certs","contents":[
-        {"type":"file","name":"certificate.conf"},
-        {"type":"file","name":"create_certificate.sh"},
-        {"type":"file","name":"server.crt"},
-        {"type":"file","name":"server.key"}
-    ]},
-      {"type":"directory","name":"conf","contents":[
-        {"type":"directory","name":"conf.d","contents":[
-          {"type":"file","name":"main.conf"}
-      ]},
-        {"type":"file","name":"fastcgi_params"},
-        {"type":"file","name":"mime.types"},
-        {"type":"file","name":"nginx.conf"}
-    ]},
-      {"type":"file","name":"Dockerfile"}
-  ]},
-    {"type":"directory","name":"php","contents":[
-      {"type":"directory","name":"5.6","contents":[
-        {"type":"file","name":"bashrc"},
-        {"type":"file","name":"Dockerfile"},
-        {"type":"file","name":"easyengine.conf"},
-        {"type":"file","name":"expose_off.ini"},
-        {"type":"file","name":"php.ini"}
-    ]},
-      {"type":"directory","name":"7.0","contents":[
-        {"type":"file","name":"bashrc"},
-        {"type":"file","name":"Dockerfile"},
-        {"type":"file","name":"easyengine.conf"},
-        {"type":"file","name":"expose_off.ini"},
-        {"type":"file","name":"php.ini"}
-    ]},
-      {"type":"directory","name":"7.2","contents":[
-        {"type":"file","name":"bashrc"},
-        {"type":"file","name":"Dockerfile"},
-        {"type":"file","name":"easyengine.conf"},
-        {"type":"file","name":"expose_off.ini"},
-        {"type":"file","name":"php.ini"}
-    ]},
-      {"type":"directory","name":"7.3","contents":[
-        {"type":"file","name":"bashrc"},
-        {"type":"file","name":"Dockerfile"},
-        {"type":"file","name":"easyengine.conf"},
-        {"type":"file","name":"expose_off.ini"},
-        {"type":"file","name":"php.ini"}
-    ]},
-      {"type":"directory","name":"7.4","contents":[
-        {"type":"file","name":"bashrc"},
-        {"type":"file","name":"Dockerfile"},
-        {"type":"file","name":"easyengine.conf"},
-        {"type":"file","name":"expose_off.ini"},
-        {"type":"file","name":"php.ini"}
-    ]},
-      {"type":"directory","name":"8.0","contents":[
-        {"type":"file","name":"bashrc"},
-        {"type":"file","name":"Dockerfile"},
-        {"type":"file","name":"easyengine.conf"},
-        {"type":"file","name":"expose_off.ini"},
-        {"type":"file","name":"php.ini"}
-    ]},
-      {"type":"directory","name":"8.1","contents":[
-        {"type":"file","name":"bashrc"},
-        {"type":"file","name":"Dockerfile"},
-        {"type":"file","name":"docker-php-ext-xdebug.ini"},
-        {"type":"file","name":"easyengine.conf"},
-        {"type":"file","name":"expose_off.ini"},
-        {"type":"file","name":"php.ini"}
-    ]},
-      {"type":"directory","name":"stable","contents":[
-        {"type":"file","name":"bashrc"},
-        {"type":"file","name":"Dockerfile"},
-        {"type":"file","name":"easyengine.conf"},
-        {"type":"file","name":"expose_off.ini"},
-        {"type":"file","name":"php.ini"}
-    ]}
-  ]},
-    {"type":"directory","name":"redis","contents":[
-      {"type":"file","name":"Dockerfile"},
-      {"type":"file","name":"purge_all_cache.lua"},
-      {"type":"file","name":"redis.conf"}
-  ]}
-  ]}
-,
-  {"type":"report","directories":18,"files":59}
-]
+config/php/stable/easyengine.conf
+config/php/stable/php.ini
+config/php/stable/expose_off.ini
+config/php/stable/Dockerfile
+config/php/stable/bashrc
+config/php/8.0/easyengine.conf
+config/php/8.0/php.ini
+config/php/8.0/expose_off.ini
+config/php/8.0/Dockerfile
+config/php/8.0/bashrc
+config/php/7.2/easyengine.conf
+config/php/7.2/php.ini
+config/php/7.2/expose_off.ini
+config/php/7.2/Dockerfile
+config/php/7.2/bashrc
+config/php/7.4/easyengine.conf
+config/php/7.4/php.ini
+config/php/7.4/expose_off.ini
+config/php/7.4/Dockerfile
+config/php/7.4/bashrc
+config/php/7.0/easyengine.conf
+config/php/7.0/php.ini
+config/php/7.0/expose_off.ini
+config/php/7.0/Dockerfile
+config/php/7.0/bashrc
+config/php/5.6/easyengine.conf
+config/php/5.6/php.ini
+config/php/5.6/expose_off.ini
+config/php/5.6/Dockerfile
+config/php/5.6/bashrc
+config/php/7.3/easyengine.conf
+config/php/7.3/php.ini
+config/php/7.3/expose_off.ini
+config/php/7.3/Dockerfile
+config/php/7.3/bashrc
+config/php/8.1/easyengine.conf
+config/php/8.1/php.ini
+config/php/8.1/expose_off.ini
+config/php/8.1/docker-php-ext-xdebug.ini
+config/php/8.1/Dockerfile
+config/php/8.1/bashrc
+config/cron/Dockerfile
+config/mariadb/ee.cnf
+config/mariadb/my.cnf
+config/mariadb/Dockerfile
+config/nginx/certs/create_certificate.sh
+config/nginx/certs/server.crt
+config/nginx/certs/certificate.conf
+config/nginx/certs/server.key
+config/nginx/conf/nginx.conf
+config/nginx/conf/mime.types
+config/nginx/conf/fastcgi_params
+config/nginx/conf/conf.d/main.conf
+config/nginx/Dockerfile
+config/mailhog/Dockerfile
+config/elasticsearch/Dockerfile
+config/redis/purge_all_cache.lua
+config/redis/Dockerfile
+config/redis/redis.conf
