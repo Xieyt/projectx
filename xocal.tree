@@ -1,3 +1,4 @@
+docker-compose.yaml
 config/php/stable/easyengine.conf
 config/php/stable/php.ini
 config/php/stable/expose_off.ini
