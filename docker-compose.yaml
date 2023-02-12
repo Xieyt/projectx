@@ -19,8 +19,14 @@ services:
       context: ./config/nginx
       dockerfile: Dockerfile
     ports:
-      - 8000:80
-      - 8001:443
+      - target: 80
+        published: ${SET_PORT_SERVER}
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: ${SET_PORT_SERVER_SSL}
+        protocol: tcp
+        mode: host
     container_name: ${SET_SITE_NAME}_nginx
     volumes:
       - type: bind
@@ -47,7 +53,9 @@ services:
 
     #user: ${SET_HOST_UID}:${SET_HOST_GID}
     volumes:
-      - ./config/mariadb/storage:/var/lib/mysql
+      - type: bind
+        source: ${SET_SITE_MARIADB_DIR}
+        target: /var/lib/mysql
     expose:
       - 3306
 
@@ -58,7 +66,10 @@ services:
     depends_on:
       - db
     ports:
-      - 8003:80
+      - target: 80
+        published: ${SET_PORT_PHPMYADMIN}
+        protocol: tcp
+        mode: host
 
   mailhog:
     build:
@@ -69,7 +80,10 @@ services:
     depends_on:
       - php
     ports:
-      - 8004:8025
+      - target: 8025
+        published: ${SET_PORT_MAILHOG}
+        protocol: tcp
+        mode: host
 
   redis:
     build:
