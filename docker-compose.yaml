@@ -11,7 +11,7 @@ services:
     container_name: ${SET_SITE_NAME}_php
     volumes:
       - type: bind
-        source: ./src
+        source: ${SET_SITE_SRC_DIR}
         target: /var/www/htdocs
 
   server:
@@ -23,7 +23,9 @@ services:
       - 8001:443
     container_name: ${SET_SITE_NAME}_nginx
     volumes:
-      - ./src:/var/www/htdocs
+      - type: bind
+        source: ${SET_SITE_SRC_DIR}
+        target: /var/www/htdocs
       - ./config/nginx/certs/server.key:/usr/local/openresty/nginx/certs/server.key
       - ./config/nginx/certs/server.crt:/usr/local/openresty/nginx/certs/server.crt
 
@@ -48,7 +50,6 @@ services:
       - ./config/mariadb/storage:/var/lib/mysql
     expose:
       - 3306
-
 
   phpmyadmin:
     image: phpmyadmin
