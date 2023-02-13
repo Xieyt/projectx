@@ -1,5 +1,11 @@
 FROM php:7.2-fpm@sha256:a8d1ebf6390aa47574fd8aec875d907a4fa1169de8c88bd256890921e6454436
 ARG SET_XEDEBUG_VERSION
+ARG SET_HOST_UID
+ARG SET_HOST_GID
+
+# Setting uid and gid same as host user
+RUN usermod --uid "$SET_HOST_UID" www-data
+RUN groupmod --gid "$SET_HOST_GID" www-data
 
 RUN set -ex; \
 	apt-get update; \
@@ -25,9 +31,7 @@ RUN set -ex; \
 		zip
 
 # Install mhsendmail on amd64
-RUN	apt-get install -y --no-install-recommends \
-        wget; \
-        wget https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 -O /usr/bin/mhsendmail; \
+RUN     curl https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 -o /usr/bin/mhsendmail; \
         chmod 777 /usr/bin/mhsendmail
 
 RUN pecl install imagick; \
@@ -82,16 +86,27 @@ RUN curl -O "https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cl
 		&& chmod +x wp-cli.phar \
 		&& mv wp-cli.phar /usr/local/bin/wp
 
+# Install nvm, node
+
+RUN export XDG_CONFIG_HOME="/opt" \
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash; \
+    \. /root/.bashrc; \
+    nvm install node \
+    && chown -R $SET_HOST_UID:$SET_HOST_GID /opt/nvm
+
 # Setup a config file
 RUN mkdir -p /etc/wp-cli
 RUN { \
 		echo 'path: /var/www/htdocs'; \
 		} > /etc/wp-cli/config.yml
 
+RUN mkdir -p /var/www/.wp-cli \
+    && chown -R $SET_HOST_UID:$SET_HOST_GID /var/www/.wp-cli
+
 
 # Setup logs
 RUN mkdir -p /var/log/php; \
-	chown -R www-data: /var/log/php; \
+	chown -R $SET_HOST_UID:$SET_HOST_GID /var/log/php; \
 	rm /usr/local/etc/php-fpm.d/*;
 COPY php.ini /usr/local/etc/php/php.ini
 COPY easyengine.conf /usr/local/etc/php-fpm.d/easyengine.conf

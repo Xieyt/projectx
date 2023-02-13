@@ -1,5 +1,11 @@
 FROM php:8.0-fpm@sha256:3ba0dec3b6c73f9948c0d3215da03e9341526356789ad75debe4848c485cf3cd
 ARG SET_XEDEBUG_VERSION
+ARG SET_HOST_UID
+ARG SET_HOST_GID
+
+# Setting uid and gid same as host user
+RUN usermod --uid "$SET_HOST_UID" www-data
+RUN groupmod --gid "$SET_HOST_GID" www-data
 
 RUN set -ex; \
 	apt-get update; \
@@ -26,10 +32,9 @@ RUN set -ex; \
 		vim \
 		zip
 
+
 # Install mhsendmail on amd64
-RUN	apt-get install -y --no-install-recommends \
-        wget; \
-        wget https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 -O /usr/bin/mhsendmail; \
+RUN     curl https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 -o /usr/bin/mhsendmail; \
         chmod 777 /usr/bin/mhsendmail
 
 RUN pecl install imagick; \
@@ -39,7 +44,7 @@ RUN pecl install imagick; \
 	pecl install mcrypt; \
 	pecl install gmagick-2.0.6RC1; \
 	pecl install timezonedb; \
-	pecl install xedebug-${SET_XEDEBUG_VERSION}; \
+	pecl install xdebug-$SET_XDEBUG_VERSION; \
 	docker-php-ext-configure gd --with-freetype --with-jpeg; \
 	docker-php-ext-configure zip; \
 	docker-php-ext-install gd; \
@@ -60,6 +65,7 @@ RUN pecl install imagick; \
 	docker-php-ext-install sysvsem; \
 	docker-php-ext-install sysvshm; \
 	docker-php-ext-install bcmath; \
+    docker-php-ext-enable xdebug; \
 	docker-php-ext-enable imagick mcrypt redis timezonedb apcu; \
 	echo "extension=memcached.so" >> /usr/local/etc/php/conf.d/memcached.ini; \
 	echo "extension=gmagick.so" >> /usr/local/etc/php/conf.d/gmagick.ini; \
@@ -81,28 +87,28 @@ RUN { \
 RUN curl -sSL "https://getcomposer.org/installer" | php \
 		&& mv composer.phar /usr/local/bin/composer
 
-# Install wp-cli
-RUN curl -O "https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar" \
-		&& chmod +x wp-cli.phar \
-		&& mv wp-cli.phar /usr/local/bin/wp
-
+# Install nvm, node
+RUN export XDG_CONFIG_HOME="/opt" \
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash; \
+    \. /root/.bashrc; \
+    nvm install node \
+    && chown -R $SET_HOST_UID:$SET_HOST_GID /opt/nvm
 # Setup a config file
 RUN mkdir -p /etc/wp-cli
 RUN { \
 		echo 'path: /var/www/htdocs'; \
 		} > /etc/wp-cli/config.yml
 
+RUN mkdir -p /var/www/.wp-cli \
+    && chown -R $SET_HOST_UID:$SET_HOST_GID /var/www/.wp-cli
+
 
 # Setup logs
 RUN mkdir -p /var/log/php; \
-	chown -R www-data: /var/log/php; \
+	chown -R $SET_HOST_UID:$SET_HOST_GID /var/log/php; \
 	rm /usr/local/etc/php-fpm.d/*;
 COPY php.ini /usr/local/etc/php/php.ini
 COPY easyengine.conf /usr/local/etc/php-fpm.d/easyengine.conf
-
-COPY expose_off.ini /usr/local/etc/php/conf.d/expose_off.ini
-COPY bashrc /root/.bashrc
-COPY bashrc /var/www/.bashrc
 
 WORKDIR /var/www/htdocs
 USER www-data
