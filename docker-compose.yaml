@@ -61,7 +61,9 @@ services:
       - 3306
 
   phpmyadmin:
-    image: phpmyadmin
+    build:
+      context: ./config/phpmyadmin
+      dockerfile: Dockerfile
     restart: on-failure
     container_name: ${SET_SITE_NAME}_phpmyadmin
     depends_on:
