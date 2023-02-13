@@ -8,10 +8,10 @@ services:
         SET_XDEBUG_VERSION: ${SET_XDEBUG_VERSION}
         SET_HOST_UID: ${SET_HOST_UID}
         SET_HOST_GID: ${SET_HOST_GID}
-    container_name: php
+    container_name: ${SET_SITE_NAME}_php
     volumes:
       - type: bind
-        source: ./src
+        source: ${SET_SITE_SRC_DIR}
         target: /var/www/htdocs
 
   server:
@@ -19,11 +19,19 @@ services:
       context: ./config/nginx
       dockerfile: Dockerfile
     ports:
-      - 8000:80
-      - 8001:443
-    container_name: nginx
+      - target: 80
+        published: ${SET_PORT_SERVER}
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: ${SET_PORT_SERVER_SSL}
+        protocol: tcp
+        mode: host
+    container_name: ${SET_SITE_NAME}_nginx
     volumes:
-      - ./src:/var/www/htdocs
+      - type: bind
+        source: ${SET_SITE_SRC_DIR}
+        target: /var/www/htdocs
       - ./config/nginx/certs/server.key:/usr/local/openresty/nginx/certs/server.key
       - ./config/nginx/certs/server.crt:/usr/local/openresty/nginx/certs/server.crt
 
@@ -35,7 +43,7 @@ services:
         SET_HOST_UID: ${SET_HOST_UID}
 
     restart: on-failure
-    container_name: db
+    container_name: ${SET_SITE_NAME}_db
     environment:
       MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
       MARIADB_ROOT_PASSWORD: root_password
@@ -45,37 +53,44 @@ services:
 
     #user: ${SET_HOST_UID}:${SET_HOST_GID}
     volumes:
-      - ./config/mariadb/storage:/var/lib/mysql
+      - type: bind
+        source: ${SET_SITE_MARIADB_DIR}
+        target: /var/lib/mysql
     expose:
       - 3306
-
 
   phpmyadmin:
     image: phpmyadmin
     restart: on-failure
-    container_name: phpmyadmin
+    container_name: ${SET_SITE_NAME}_phpmyadmin
     depends_on:
       - db
     ports:
-      - 8003:80
+      - target: 80
+        published: ${SET_PORT_PHPMYADMIN}
+        protocol: tcp
+        mode: host
 
   mailhog:
     build:
       context: ./config/mailhog
       dockerfile: Dockerfile
     restart: on-failure
-    container_name: mailhog
+    container_name: ${SET_SITE_NAME}_mailhog
     depends_on:
       - php
     ports:
-      - 8004:8025
+      - target: 8025
+        published: ${SET_PORT_MAILHOG}
+        protocol: tcp
+        mode: host
 
   redis:
     build:
       context: ./config/redis
       dockerfile: Dockerfile
     restart: on-failure
-    container_name: redis
+    container_name: ${SET_SITE_NAME}_redis
     depends_on:
       - php
     expose:
@@ -87,7 +102,7 @@ services:
       dockerfile: Dockerfile
 
     restart: on-failure
-    container_name: elasticsearch
+    container_name: ${SET_SITE_NAME}_elasticsearch
     expose:
       - 9200
       - 9300
