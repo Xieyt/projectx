@@ -32,8 +32,9 @@ services:
       - type: bind
         source: ${SET_SITE_SRC_DIR}
         target: /var/www/htdocs
-      - ./config/nginx/certs/server.key:/usr/local/openresty/nginx/certs/server.key
-      - ./config/nginx/certs/server.crt:/usr/local/openresty/nginx/certs/server.crt
+      - type: bind
+        source: ./config/nginx/certs
+        target: /usr/local/openresty/nginx/certs
 
   db:
     build:
