@@ -72,6 +72,9 @@ RUN pecl install imagick; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*;
 
+# Turn off Xdebug
+RUN rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
 RUN { \

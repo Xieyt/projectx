@@ -38,7 +38,7 @@ RUN pecl install imagick; \
 	pecl install memcached; \
 	pecl install mcrypt-1.0.3; \
 	pecl install redis; \
-	pecl install xedebug-${SET_XEDEBUG_VERSION}; \
+	pecl install xdebug-$SET_XDEBUG_VERSION; \
 	docker-php-ext-configure gd --enable-gd-native-ttf --with-freetype-dir=/usr/include/freetype2 --with-png-dir=/usr/include --with-jpeg-dir=/usr/include; \
 	docker-php-ext-install xedebug; \
 	docker-php-ext-configure zip; \
@@ -53,10 +53,14 @@ RUN pecl install imagick; \
 	docker-php-ext-install intl; \
 	docker-php-ext-install zip; \
 	docker-php-ext-install exif; \
+    docker-php-ext-enable xdebug; \
 	docker-php-ext-enable imagick mcrypt redis; \
 	docker-php-ext-install bcmath; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*;
+
+# Turn off Xdebug
+RUN rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php

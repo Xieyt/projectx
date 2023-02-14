@@ -1,5 +1,5 @@
 FROM php:7.4-fpm@sha256:3ac7c8c74b2b047c7cb273469d74fc0d59b857aa44043e6ea6a0084372811d5b
-ARG SET_XEDEBUG_VERSION
+ARG SET_XDEBUG_VERSION
 ARG SET_HOST_UID
 ARG SET_HOST_GID
 
@@ -71,6 +71,9 @@ RUN pecl install imagick; \
 	echo "extension=gmagick.so" >> /usr/local/etc/php/conf.d/gmagick.ini; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*;
+
+# Turn off Xdebug
+RUN rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php

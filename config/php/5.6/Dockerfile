@@ -36,16 +36,21 @@ RUN     curl https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhse
 RUN pecl install imagick memcached-2.2.0; \
 	printf "\n" | pecl install mcrypt-1.0.1; \
 	printf "\n" | pecl install redis; \
+	printf "\n" | pecl install xdebug-$SET_XDEBUG_VERSION; \
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
 	docker-php-ext-configure zip --with-libzip; \
 	docker-php-ext-configure --with-php-config=/usr/local/bin/php-config; \
 	docker-php-ext-configure imap --with-kerberos --with-imap-ssl; \
 	docker-php-ext-install gd imap mysqli opcache soap zip; \
+    docker-php-ext-enable xdebug; \
 	docker-php-ext-enable imagick mcrypt redis; \
 	echo "extension=memcached.so" >> /usr/local/etc/php/conf.d/memcached.ini; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
     apt-get clean; \
 	rm -rf /var/lib/apt/lists/*;
+
+# Turn off Xdebug
+RUN rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 # RUN	mkdir -p /usr/src/php/ext; \
 # 	cd /usr/src/php/ext/; \

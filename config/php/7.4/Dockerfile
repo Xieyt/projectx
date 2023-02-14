@@ -1,5 +1,5 @@
 FROM php:7.4-fpm@sha256:3ac7c8c74b2b047c7cb273469d74fc0d59b857aa44043e6ea6a0084372811d5b
-ARG SET_XEDEBUG_VERSION
+ARG SET_XDEBUG_VERSION
 ARG SET_HOST_UID
 ARG SET_HOST_GID
 
@@ -42,7 +42,7 @@ RUN pecl install imagick; \
     pecl install apcu; \
     pecl install gmagick-2.0.6RC1; \
     pecl install timezonedb; \
-	pecl install xedebug-${SET_XEDEBUG_VERSION}; \
+	pecl install xdebug-$SET_XDEBUG_VERSION; \
 	docker-php-ext-configure gd --with-freetype --with-jpeg; \
 	docker-php-ext-configure zip; \
 	docker-php-ext-install gd; \
@@ -63,11 +63,15 @@ RUN pecl install imagick; \
     docker-php-ext-install sysvsem; \
     docker-php-ext-install sysvshm; \
 	docker-php-ext-install bcmath; \
+    docker-php-ext-enable xdebug; \
 	docker-php-ext-enable imagick mcrypt redis timezonedb apcu; \
     echo "extension=memcached.so" >> /usr/local/etc/php/conf.d/memcached.ini; \
 	echo "extension=gmagick.so" >> /usr/local/etc/php/conf.d/gmagick.ini; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*;
+
+# Turn off Xdebug
+RUN rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
