@@ -56,3 +56,4 @@ config/redis/purge_all_cache.lua
 config/redis/Dockerfile
 config/redis/redis.conf
 config/phpmyadmin/Dockerfile
+config/php/xdebug/docker-php-ext-xdebug.ini
