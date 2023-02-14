@@ -45,9 +45,6 @@ config/mariadb/ee.cnf
 config/mariadb/my.cnf
 config/mariadb/Dockerfile
 config/nginx/certs/create_certificate.sh
-config/nginx/certs/server.crt
-config/nginx/certs/certificate.conf
-config/nginx/certs/server.key
 config/nginx/conf/nginx.conf
 config/nginx/conf/mime.types
 config/nginx/conf/fastcgi_params

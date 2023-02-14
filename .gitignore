@@ -1,3 +1,5 @@
 config/mariadb/storage
-config/nginx/certs/*
+config/nginx/certs/server.key
+config/nginx/certs/server.crt
+config/nginx/certs/create_certificate.sh
 
