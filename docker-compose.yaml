@@ -68,6 +68,9 @@ services:
     container_name: ${SET_SITE_NAME}_phpmyadmin
     depends_on:
       - db
+    environment:
+      PMA_USER: example_user
+      PMA_PASSWORD: example_pass
     ports:
       - target: 80
         published: ${SET_PORT_PHPMYADMIN}
