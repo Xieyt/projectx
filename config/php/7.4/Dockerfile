@@ -95,7 +95,7 @@ RUN export XDG_CONFIG_HOME="/opt" \
     && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash; \
     \. /root/.bashrc; \
     nvm install node \
-    && chown -R $SET_HOST_UID:$SET_HOST_GID /opt/nvm
+    && if [ "$BUILDARCH" != "arm64" ]; then chown -R $SET_HOST_UID:$SET_HOST_GID /opt/nvm ; else chown -R www-data:www-data /opt/nvm ; fi
 
 # Setup a config file
 RUN mkdir -p /etc/wp-cli
@@ -104,12 +104,12 @@ RUN { \
 		} > /etc/wp-cli/config.yml
 
 RUN mkdir -p /var/www/.wp-cli \
-    && chown -R $SET_HOST_UID:$SET_HOST_GID /var/www/.wp-cli
+    && if [ "$BUILDARCH" != "arm64" ]; then chown -R $SET_HOST_UID:$SET_HOST_GID /var/www/.wp-cli ; else chown -R www-data:www-data /var/www/.wp-cli ; fi
 
 
 # Setup logs
 RUN mkdir -p /var/log/php; \
-	chown -R $SET_HOST_UID:$SET_HOST_GID /var/log/php; \
+    if [ "$BUILDARCH" != "arm64" ]; then chown -R $SET_HOST_UID:$SET_HOST_GID /var/log/php ; else chown -R www-data:www-data /var/log/php ; fi ;\
 	rm /usr/local/etc/php-fpm.d/*;
 COPY php.ini /usr/local/etc/php/php.ini
 COPY easyengine.conf /usr/local/etc/php-fpm.d/easyengine.conf
