@@ -5,8 +5,8 @@ ARG BUILDARCH
 
 # Setting uid and gid same as host user
 # not running this on arm64
-RUN if [ $BUILDARCH = "arm64" ]; then usermod --uid "$SET_HOST_UID" www-data ; fi
-RUN if [ $BUILDARCH = "arm64" ]; then groupmod --gid "$SET_HOST_GID" www-data ; fi
+RUN if [ "$BUILDARCH" != "arm64" ]; then usermod --uid "$SET_HOST_UID" www-data ; fi
+RUN if [ "$BUILDARCH" != "arm64" ]; then groupmod --gid "$SET_HOST_GID" www-data ; fi
 
 RUN rm /etc/mysql/my.cnf && rm /etc/mysql/mariadb.cnf
 COPY ee.cnf  /etc/mysql/conf.d/ee.cnf
