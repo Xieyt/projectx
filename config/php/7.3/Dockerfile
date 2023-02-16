@@ -3,6 +3,13 @@ ARG SET_XDEBUG_VERSION
 ARG SET_HOST_UID
 ARG SET_HOST_GID
 
+ARG BUILDARCH
+
+# Setting uid and gid same as host user
+# not running this on arm64
+RUN if [ $BUILDARCH = "arm64" ]; then usermod --uid "$SET_HOST_UID" www-data ; fi
+RUN if [ $BUILDARCH = "arm64" ]; then groupmod --gid "$SET_HOST_GID" www-data ; fi
+
 RUN set -ex; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
