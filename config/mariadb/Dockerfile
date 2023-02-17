@@ -5,7 +5,7 @@ ARG BUILDARCH
 
 # Setting uid and gid same as host user
 # not running this on arm64
-RUN if [ "$BUILDARCH" != "arm64" ]; then usermod --uid "$SET_HOST_UID" www-data ; fi
+RUN if [ "$BUILDARCH" != "arm64" ]; then usermod --uid "$SET_HOST_UID" mysql ; fi
 RUN if [ "$BUILDARCH" != "arm64" ]; then chown -R mysql: /var/log/mysql ; fi
 
 RUN rm /etc/mysql/my.cnf && rm /etc/mysql/mariadb.cnf
